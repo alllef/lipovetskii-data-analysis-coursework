@@ -20,21 +20,16 @@ import java.util.Scanner;
 
 public class DefaultParser {
 
-    private File file;
-    private String url;
-    FileInputStream fileIS;
-    DocumentBuilderFactory builderFactory;
     DocumentBuilder builder;
     Document xmlDocument;
     XPath xPath;
-
 
 
     public void createParsingMenu() {
         Scanner scanner = new Scanner(System.in);
         while (true) {
             System.out.println("Enter xpath query");
-           String expression = scanner.nextLine();
+            String expression = scanner.nextLine();
 
 
             try {
@@ -50,35 +45,30 @@ public class DefaultParser {
         }
     }
 
-    NodeList geNodesByExpression(String expression) {
+    public NodeList getNodesByExpression(String expression) {
         NodeList nodeList = null;
+
         try {
             nodeList = (NodeList) xPath.compile(expression).evaluate(xmlDocument, XPathConstants.NODESET);
         } catch (XPathExpressionException e) {
             e.printStackTrace();
         }
+
         return nodeList;
     }
 
-    void parseByUrl(String url) throws IOException {
-        this.url = url;
+    public void parseByUrl(String url) {
+        StringBuilder inputLine = new StringBuilder();
 
+        try (BufferedReader in = new BufferedReader(
+                new InputStreamReader(new URL(url).openStream()))) {
 
-        BufferedReader in = new BufferedReader(
-                new InputStreamReader(new URL(url).openStream()));
+            Scanner scan = new Scanner(in);
 
-        String inputLine = "";
-        String addLine;
+            while (scan.hasNextLine())
+                inputLine.append(scan.nextLine());
 
-        do {
-            addLine = in.readLine();
-            if (addLine != null) inputLine += addLine;
-        }
-        while (addLine != null);
-
-        System.out.println(inputLine);
-        try {
-            in.close();
+            System.out.println(inputLine);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -86,22 +76,19 @@ public class DefaultParser {
         Tidy tidy = new Tidy();
         tidy.setXHTML(true);
 
-
-        StringReader reader = new StringReader(inputLine);
+        StringReader reader = new StringReader(inputLine.toString());
         StringWriter writer = new StringWriter();
         Node n = tidy.parse(reader, writer);
 
         try {
             xmlDocument = builder.parse(new InputSource(new StringReader(writer.getBuffer().toString())));
-        } catch (SAXException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+        } catch (SAXException | IOException e) {
             e.printStackTrace();
         }
 
     }
 
-    void parseByFile(String path) throws IOException, SAXException {
+    public void parseByFile(String path) throws IOException, SAXException {
 
         Tidy tidy = new Tidy();
         tidy.setXHTML(true);
@@ -116,10 +103,10 @@ public class DefaultParser {
         xmlDocument = builder.parse(new InputSource(new StringReader(writer.getBuffer().toString())));
     }
 
-    public DefaultParser() throws IOException, SAXException {
-        builderFactory = DocumentBuilderFactory.newInstance();
+    public DefaultParser() {
+
         try {
-            builder = builderFactory.newDocumentBuilder();
+            builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
         } catch (ParserConfigurationException e) {
             e.printStackTrace();
         }
@@ -128,17 +115,10 @@ public class DefaultParser {
 
 
     public static void main(String[] args) {
-        DefaultParser parser = null;
 
-        try {
-            parser = new DefaultParser();
-            parser.parseByUrl("https://howlongtobeat.com/#search");
-            //parser.parseByFile("src/main/resources/haskelevich.txt");
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (SAXException e) {
-            e.printStackTrace();
-        }
+       DefaultParser parser = new DefaultParser();
+        parser.parseByUrl("https://howlongtobeat.com/#search");
+        //parser.parseByFile("src/main/resources/haskelevich.txt");
         parser.createParsingMenu();
 
 
