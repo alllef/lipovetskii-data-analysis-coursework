@@ -2,11 +2,10 @@ package com.github.lipovetskii.data_parsing;
 
 import org.w3c.dom.NodeList;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HowLongToBeatParser {
+public class HowLongToBeatTidyParser {
     DefaultParser defaultParser = new DefaultParser();
     final String baseURL = "https://howlongtobeat.com/";
 
@@ -19,14 +18,22 @@ public class HowLongToBeatParser {
 
         for (int i = 0; i < nodeList.getLength(); i++) {
             String tmp = nodeList.item(i).getTextContent();
-            if(tmp.contains("game?")) strings.add(tmp);
+            if (tmp.contains("game?")) strings.add(tmp);
         }
-
+        parseGamePage(strings.get(0));
         return strings;
     }
 
+    void parseGamePage(String page) {
+        defaultParser.parseByUrl(baseURL + page);
+        NodeList nodeList = defaultParser.getNodesByExpression("//div");
+        for (int i = 0; i < nodeList.getLength(); i++) {
+            System.out.println(nodeList.item(i).getTextContent());
+        }
+    }
+
     public static void main(String[] args) {
-        HowLongToBeatParser parser = new HowLongToBeatParser();
+        HowLongToBeatTidyParser parser = new HowLongToBeatTidyParser();
         parser.parseLink();
     }
 }

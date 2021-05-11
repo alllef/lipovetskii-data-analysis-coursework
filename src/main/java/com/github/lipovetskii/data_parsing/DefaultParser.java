@@ -32,15 +32,10 @@ public class DefaultParser {
             String expression = scanner.nextLine();
 
 
-            try {
-                NodeList nodeList = (NodeList) xPath.compile(expression).evaluate(xmlDocument, XPathConstants.NODESET);
-                System.out.println(nodeList.getLength());
-                for (int i = 0; i < nodeList.getLength(); i++)
-                    System.out.println(nodeList.item(i).getTextContent());
-
-            } catch (XPathExpressionException e) {
-                e.printStackTrace();
-            }
+            NodeList nodeList = getNodesByExpression(expression);
+            System.out.println(nodeList.getLength());
+            for (int i = 0; i < nodeList.getLength(); i++)
+                System.out.println(nodeList.item(i).getTextContent());
 
         }
     }
@@ -115,10 +110,10 @@ public class DefaultParser {
 
 
     public static void main(String[] args) {
-
-       DefaultParser parser = new DefaultParser();
-        parser.parseByUrl("https://howlongtobeat.com/#search");
-        //parser.parseByFile("src/main/resources/haskelevich.txt");
+        String baseURL = "https://howlongtobeat.com/";
+        String page = "game?id=80038";
+        DefaultParser parser = new DefaultParser();
+        parser.parseByUrl(baseURL+page);
         parser.createParsingMenu();
 
 
