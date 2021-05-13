@@ -4,10 +4,10 @@ import java.util.Map;
 
 public class StringFormer {
 
-    private final String[] walkthroughType = new String[]{"Main Story", "Main + Extras", "Completionist", "All Styles"};
-    private final String[] dataInformation = new String[]{"Platform", "Genre", "Developer", "Publisher", "NA", "EU", "JP", "Type"};
+    private final static String[] walkthroughType = new String[]{"Main Story", "Main + Extras", "Completionist", "All Styles"};
+    private final static String[] dataInformation = new String[]{"Platform", "Genre", "Developer", "Publisher", "NA", "EU", "JP", "Type"};
 
-    String formHeader() {
+   static String formHeader() {
         String header = "Name,";
 
         for (String tmp : dataInformation)
@@ -16,10 +16,10 @@ public class StringFormer {
         for (String tmp : walkthroughType)
             header += tmp += ",";
 
-        return header.substring(0, header.length() - 1);
+        return header.substring(0, header.length() - 1).concat("\n");
     }
 
-    String formRow(GamePage page) {
+   static String formRow(GamePage page) {
 
         String row = page.getHeader() + ",";
         Map<String, String> additionalInfo = page.getAdditionalInformation();
@@ -35,7 +35,7 @@ public class StringFormer {
             row += ",";
         }
 
-        return row.substring(0, row.length() - 1).replace("null", "");
+        return row.substring(0, row.length() - 1).replace("null", "").concat("\n");
     }
 
     public static void main(String[] args) {

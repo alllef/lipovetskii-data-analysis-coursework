@@ -22,10 +22,11 @@ public class HowLongToBeatJSoupParser {
     }
 
     void parseHowLongToBeat() {
-
-        for (int i = 1; i < 800; i++) {
+        FileSaver.saveString(StringFormer.formHeader());
+        for (int i = 1; i < 80000; i++) {
             System.out.println(i);
-            GamePage page = new GamePage("https://howlongtobeat.com/game?id="+i );
+            GamePage page  = new GamePage("https://howlongtobeat.com/game?id=" + i);
+           if (page.isSinglePlayerPage())FileSaver.saveString(StringFormer.formRow(page));
         }
 
     }

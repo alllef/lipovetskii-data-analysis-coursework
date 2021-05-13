@@ -17,6 +17,10 @@ public class GamePage extends WebPage {
         super(link);
     }
 
+    public boolean isSinglePlayerPage(){
+        return doc.select(".game_times").text().startsWith("Main Story");
+    }
+
     public String getHeader() {
         return doc.select(".profile_header_game>div").first().text();
     }
@@ -61,7 +65,7 @@ public class GamePage extends WebPage {
 
         for (Element elem : addInfoElements) {
             String key = elem.select("strong").text().replace(":", "");
-            String value = elem.text().replace(key + ": ", "");
+            String value = elem.text().replace(key + ": ", "").replace(",",";");
             if (pluralFormKeys.contains(key)) additionalInformation.put(key.substring(0, key.length() - 1), value);
             else additionalInformation.put(key, value);
         }
