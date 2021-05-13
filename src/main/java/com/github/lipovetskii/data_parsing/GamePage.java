@@ -17,8 +17,8 @@ public class GamePage extends WebPage {
         super(link);
     }
 
-    public String getHeader(){
-        return doc.select(".profile_header shadow_text").text();
+    public String getHeader() {
+        return doc.select(".profile_header_game>div").first().text();
     }
 
     public Map<String, Integer> getTimeToBeat() {
@@ -40,9 +40,14 @@ public class GamePage extends WebPage {
 
         for (Map.Entry<String, String> pair : timeToBeat.entrySet()) {
 
-            double minutes = Double.parseDouble(pair.getValue().split(" ")[0].replace("½", "0.5"));
-            if (pair.getValue().contains("Hours")) minutes *= 60;
-            filteredTimeToBeat.put(pair.getKey(), (int) minutes);
+            try {
+                double minutes = Double.parseDouble(pair.getValue().split(" ")[0].replace("½", "0.5"));
+                if (pair.getValue().contains("Hours")) minutes *= 60;
+                filteredTimeToBeat.put(pair.getKey(), (int) minutes);
+            } catch (NumberFormatException e) {
+                filteredTimeToBeat.put(pair.getKey(), null);
+            }
+
         }
 
         return filteredTimeToBeat;
@@ -58,7 +63,7 @@ public class GamePage extends WebPage {
             String key = elem.select("strong").text().replace(":", "");
             String value = elem.text().replace(key + ": ", "");
             if (pluralFormKeys.contains(key)) additionalInformation.put(key.substring(0, key.length() - 1), value);
-            else additionalInformation.put(key,value);
+            else additionalInformation.put(key, value);
         }
 
         return additionalInformation;
