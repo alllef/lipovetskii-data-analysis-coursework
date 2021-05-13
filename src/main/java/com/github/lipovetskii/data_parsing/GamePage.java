@@ -11,22 +11,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class GamePage {
-
-    private String link;
-    private Document doc;
+public class GamePage extends WebPage {
 
     public GamePage(String link) {
-        this.link = link;
+        super(link);
+    }
 
-        try {
-            doc = Jsoup.connect(link).get();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        Map<String,Integer> getTimeToBeat = getTimeToBeat();
-        Map<String, String> getAddiInformation = getAdditionalInformation();
-
+    public String getHeader(){
+        return doc.select(".profile_header shadow_text").text();
     }
 
     public Map<String, Integer> getTimeToBeat() {
@@ -47,6 +39,7 @@ public class GamePage {
         Map<String, Integer> filteredTimeToBeat = new HashMap<>();
 
         for (Map.Entry<String, String> pair : timeToBeat.entrySet()) {
+
             double minutes = Double.parseDouble(pair.getValue().split(" ")[0].replace("½", "0.5"));
             if (pair.getValue().contains("Hours")) minutes *= 60;
             filteredTimeToBeat.put(pair.getKey(), (int) minutes);

@@ -1,5 +1,9 @@
 package com.github.lipovetskii.data_parsing;
 
+import com.gargoylesoftware.htmlunit.BrowserVersion;
+import com.gargoylesoftware.htmlunit.NicelyResynchronizingAjaxController;
+import com.gargoylesoftware.htmlunit.WebClient;
+import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
@@ -11,38 +15,24 @@ public class HowLongToBeatJSoupParser {
         Document doc = null;
 
         try {
-            doc = Jsoup.connect("https://howlongtobeat.com/#search"+number).get();
+            doc = Jsoup.connect("https://howlongtobeat.com/game?id=" + number).followRedirects(false).get();
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        doc.select("a[href^=game?id]").forEach((element) -> new GamePage("https://howlongtobeat.com/"+element.attr("href")));
     }
 
+    void parseHowLongToBeat() {
 
-
-    void testGamePage(String link) {
-        Document doc = null;
-
-        try {
-            doc = Jsoup.connect("https://howlongtobeat.com/" + link).get();
-        } catch (IOException e) {
-            e.printStackTrace();
+        for (int i = 1; i < 800; i++) {
+            System.out.println(i);
+            GamePage page = new GamePage("https://howlongtobeat.com/game?id="+i );
         }
-        doc.select(".game_times>ul>li");
 
     }
 
-    void get1PercentInformation(){
-
-        for (int i=1;i<20;i++ ){
-getInformation(i);
-        }
-    }
 
     public static void main(String[] args) {
         HowLongToBeatJSoupParser jSoupTest = new HowLongToBeatJSoupParser();
-        jSoupTest.get1PercentInformation();
-
+        jSoupTest.parseHowLongToBeat();
     }
 }
